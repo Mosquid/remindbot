@@ -1,0 +1,31 @@
+{
+  "name": "remindbot",
+  "version": "1.0.0",
+  "description": "awesome reminder bot backend for telegram",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'you are awesome'",
+    "dev": "nodemon ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Mosquid/remindbot.git"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "reminder"
+  ],
+  "author": "Mosquid",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mosquid/remindbot/issues"
+  },
+  "homepage": "https://github.com/Mosquid/remindbot#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "node-telegram-bot-api": "^0.30.0"
+  }
+}
