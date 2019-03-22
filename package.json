@@ -19,13 +19,20 @@
   "author": "Mosquid",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Mosquid/remindbot/issues"
+    "url": "https://mosquid.com"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "db.json"
+    ]
   },
   "homepage": "https://github.com/Mosquid/remindbot#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
+    "lowdb": "^1.0.0",
+    "moment": "^2.24.0",
     "node-telegram-bot-api": "^0.30.0"
   }
 }
