@@ -30,9 +30,10 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
+    "emitonoff": "^0.1.1",
     "express": "^4.16.4",
     "lowdb": "^1.0.0",
-    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.23",
     "node-telegram-bot-api": "^0.30.0"
   }
 }

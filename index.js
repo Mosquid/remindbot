@@ -1,10 +1,12 @@
-const TelegramBot = require('node-telegram-bot-api');
-const express     = require('express')
-const bodyParser  = require('body-parser')
-const app         = express()
-const moment      = require('moment')
-const {addTask}   = require('./db')
-const port        = 1488
+const TelegramBot   = require('node-telegram-bot-api');
+const express       = require('express')
+const bodyParser    = require('body-parser')
+const moment        = require('moment-timezone')
+const app           = express()
+const {addTask}     = require('./db')
+const {updateQueue} = require('./scheduler')
+const {emitonoff}   = require('./events')
+const port          = 1488
 
 require('dotenv').config()
 
@@ -17,6 +19,10 @@ const users = {}
 bot.on('message', handleUpdateEvent)
 bot.on('polling_error', handlePollingError)
 
+emitonoff.on('task', task => {
+  sendToChat(task.chat, task.text)
+})
+
 /**
  *
  * API Server
@@ -24,6 +30,7 @@ bot.on('polling_error', handlePollingError)
  * @chat - chat id that returns after your add a bot
  *
  */
+updateQueue()
 app.post('/', (req, res) => {
   const msg  = req.body.message
   const chat = req.body.chat
@@ -35,8 +42,9 @@ app.post('/', (req, res) => {
   if (!msg)
     return res.json({err: 'No message was sent'})
 
-  const task = taskFactory({msg})
+  const task = taskFactory({msg, date, chat})
   addTask(task)
+  updateQueue()
 
   res.json({done: true})
   // bot.sendMessage(chat, msg)
@@ -64,12 +72,19 @@ function handleUpdateEvent(upd) {
 
 function taskFactory(data) {
   const obj = {
-    delay: 1550,//todo
-    ts: new Date().getTime(),
-    text: data.msg
+    ts: data.date.unix(),
+    id: new Date().getTime(),
+    text: data.msg,
+    chat: data.chat
   }
 
   return obj
+}
+
+function sendToChat(chat, text) {
+  bot.sendMessage(chat, text)
+    .then(e => console.log('[SENT to]:', chat))
+    .catch(err => console.log(err))
 }
 
 function handlePollingError(err) {

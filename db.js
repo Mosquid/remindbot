@@ -11,7 +11,16 @@ module.exports.addTask = task => {
 }
 
 module.exports.deleteTask = id => {
-  db.get('posts')
-  .remove({ ts: id })
+  db.get('tasks')
+  .remove({ id: id })
   .write()
+}
+
+module.exports.getLatestTask = () => {
+  const tasks = db.get('tasks')
+  .orderBy('ts')
+  .take(1)
+  .value()
+
+  return tasks[0]
 }
