@@ -6,12 +6,14 @@ const app           = express()
 const {addTask}     = require('./db')
 const {updateQueue} = require('./scheduler')
 const {emitonoff}   = require('./events')
+const cors          = require('cors')
 const port          = 1488
 
 require('dotenv').config()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cors())
 
 const bot   = new TelegramBot(process.env.TOKEN, {polling: true})
 const users = {}
@@ -43,6 +45,7 @@ app.post('/', (req, res) => {
     return res.json({err: 'No message was sent'})
 
   const task = taskFactory({msg, date, chat})
+  console.log(task)
   addTask(task)
   updateQueue()
 
@@ -65,6 +68,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
  *
  */
 function handleUpdateEvent(upd) {
+  console.log(upd);
   const chatId = upd.from.id
   // in the CLI we'll need to add CHAT_ID so we're sending it back
   bot.sendMessage(chatId, `Chat ID: ${chatId}`)

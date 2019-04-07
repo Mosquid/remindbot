@@ -9,6 +9,10 @@ let masterTimout = false
 
 module.exports.updateQueue = item => {
   const latest = getLatestTask()
+
+  if (!latest)
+    return
+
   const diff = latest.ts - moment().unix()
 
   if (diff < 0) {
