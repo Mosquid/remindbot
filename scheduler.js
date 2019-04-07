@@ -12,7 +12,7 @@ module.exports.updateQueue = item => {
 
   if (!latest)
     return
-
+  
   const diff = latest.ts - moment().unix()
 
   if (diff < 0) {
@@ -26,5 +26,5 @@ module.exports.updateQueue = item => {
     emitonoff.emit('task', latest)
     deleteTask(latest.id)
     module.exports.updateQueue()
-  }, diff * 1000)
+  }, diff * 100)
 }

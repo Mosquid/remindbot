@@ -12,7 +12,7 @@ const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
 
 require('dotenv').config()
-
+console.log(moment())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
