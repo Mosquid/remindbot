@@ -8,6 +8,8 @@ const {updateQueue} = require('./scheduler')
 const {emitonoff}   = require('./events')
 const cors          = require('cors')
 const port          = 1488
+const WebSocket     = require('ws');
+const ws            = new WebSocket(process.env.WS_URL);
 
 require('dotenv').config()
 
@@ -33,6 +35,7 @@ emitonoff.on('task', task => {
  *
  */
 updateQueue()
+
 app.post('/', (req, res) => {
   const msg  = req.body.message
   const chat = req.body.chat
@@ -45,19 +48,30 @@ app.post('/', (req, res) => {
     return res.json({err: 'No message was sent'})
 
   const task = taskFactory({msg, date, chat})
-  console.log(task)
   addTask(task)
   updateQueue()
 
   res.json({done: true})
-  // bot.sendMessage(chat, msg)
-  // .then(e => {
-  //   res.json({status: 'Success'})
-  // })
-  // .catch(e => {
-  //   console.log(e);
-  //   res.json({err: 'Failed to add a reminder'})
-  // })
+})
+
+/**
+ *
+ * Adding WS message handler for home IP
+ * (the project will be running on my old android device)
+ *
+ */
+ws.on('message', data => {
+  const req = JSON.parse(data)
+  const msg  = req.message
+  const chat = req.chat
+  const date = req.date ? moment(req.date) : null
+
+  if (!chat || !date || !msg)
+    return
+
+  const task = taskFactory({msg, date, chat})
+  addTask(task)
+  updateQueue()
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
