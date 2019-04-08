@@ -4,6 +4,7 @@ const bodyParser    = require('body-parser')
 const moment        = require('moment-timezone')
 const app           = express()
 const {addTask}     = require('./db')
+const {getAllTasks} = require('./db')
 const {updateQueue} = require('./scheduler')
 const {emitonoff}   = require('./events')
 const cors          = require('cors')
@@ -35,6 +36,25 @@ emitonoff.on('task', task => {
  *
  */
 updateQueue()
+
+app.get('/', (req, res) => {
+  const tasks = getAllTasks()
+  
+  if (!tasks || !tasks.length)
+    return res.send('No upcoming tasks')
+
+  let output = '<ul style="font-size: 150%">'
+
+  for (let task of tasks) {
+    console.log(task.ts)
+    const date = moment.unix(task.ts).format('LLLL')
+    output += `<li><strong>${date}</strong><div>${task.text}</div></li>`
+  }
+
+  output += '</ul>'
+
+  res.send(output)
+})
 
 app.post('/', (req, res) => {
   const msg  = req.body.message

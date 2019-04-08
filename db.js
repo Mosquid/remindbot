@@ -24,3 +24,9 @@ module.exports.getLatestTask = () => {
 
   return tasks[0]
 }
+
+module.exports.getAllTasks = () => {
+  return db.get('tasks')
+  .orderBy('ts')
+  .value()
+}
