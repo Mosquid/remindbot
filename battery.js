@@ -9,7 +9,7 @@ module.exports = function battery() {
 
       const data = JSON.parse(stdout)
 
-      if (data.percentage < 50)
+      if (data.percentage < 20)
         emitonoff.emit('battery', stdout)
     })
   }, 5 * 60 * 1000)
