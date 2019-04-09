@@ -102,10 +102,10 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
  *
  */
 function handleUpdateEvent(upd) {
-  console.log(upd);
-  const chatId = upd.from.id
-  // in the CLI we'll need to add CHAT_ID so we're sending it back
-  bot.sendMessage(chatId, `Chat ID: ${chatId}`)
+  const chatId = upd.chat.id
+  const text = encodeURI(upd.text)
+
+  bot.sendMessage(chatId, `https://www.google.com/search?q=${text}`)
 }
 
 function taskFactory(data) {
