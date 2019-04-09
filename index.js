@@ -8,12 +8,13 @@ const {getAllTasks} = require('./db')
 const {updateQueue} = require('./scheduler')
 const {emitonoff}   = require('./events')
 const cors          = require('cors')
+const battery       = require('./battery')()
 const port          = 1488
 const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
 
 require('dotenv').config()
-console.log(moment())
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
@@ -23,6 +24,10 @@ const users = {}
 
 bot.on('message', handleUpdateEvent)
 bot.on('polling_error', handlePollingError)
+
+emitonoff.on('battery', data => {
+  console.log(data, "DATA")
+})
 
 emitonoff.on('task', task => {
   sendToChat(task.chat, task.text)

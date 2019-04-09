@@ -21,7 +21,7 @@ module.exports.updateQueue = item => {
   }
 
   clearTimeout(masterTimout)
-  console.log(latest)
+  
   masterTimout = setTimeout(function() {
     emitonoff.emit('task', latest)
     deleteTask(latest.id)
