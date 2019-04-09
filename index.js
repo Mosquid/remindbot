@@ -8,13 +8,14 @@ const {getAllTasks} = require('./db')
 const {updateQueue} = require('./scheduler')
 const {emitonoff}   = require('./events')
 const cors          = require('cors')
-const battery       = require('./battery')()
+const {battery}     = require('./battery')
+const {getStatus}   = require('./battery')
 const port          = 1488
 const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
-
+// console.log(battery())
 require('dotenv').config()
-
+battery()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
@@ -34,15 +35,15 @@ emitonoff.on('task', task => {
   sendToChat(task.chat, task.text)
 })
 
-/**
- *
- * API Server
- * @msg - string; text of the reminder
- * @chat - chat id that returns after your add a bot
- *
- */
 updateQueue()
 
+
+/**
+ *
+ * 
+ * API GET handler: returns upcoming tasks
+ *
+ */
 app.get('/', (req, res) => {
   const tasks = getAllTasks()
   
@@ -62,6 +63,29 @@ app.get('/', (req, res) => {
   res.send(output)
 })
 
+
+/**
+ *
+ * Get battery status
+ *
+ */
+app.get('/status', (req, res) => {
+  getStatus()
+  .then(e => {
+    res.json(e)
+  })
+  .catch(e => {
+    res.json(e)
+  })
+})
+
+/**
+ *
+ * API Server
+ * @msg - string; text of the reminder
+ * @chat - chat id that returns after your add a bot
+ *
+ */
 app.post('/', (req, res) => {
   const msg  = req.body.message
   const chat = req.body.chat

@@ -1,16 +1,28 @@
 const {exec}    = require('child_process');
 const {emitonoff} = require('./events')
 
-module.exports = function battery() {
-  setInterval(function() {
+module.exports.getStatus = function() {
+  return new Promise((resolve, reject) => {
     exec('termux-battery-status', (err, stdout, stderr) => {
       if (err)
-        return
+        return reject(err)
 
       const data = JSON.parse(stdout)
+      
+      resolve(data)
+    })
+  })
+}
 
+module.exports.battery = function battery() {
+  setInterval(function() {
+    module.exports.getStatus()
+    .then(data => {
       if (data.percentage < 20 && data.plugged !== 'PLUGGED_AC')
         emitonoff.emit('battery', stdout)
     })
-  }, 60 * 60 * 1000)
+    .catch(e => {
+      console.log(e)
+    })
+  }, 10 * 1000)
 }
