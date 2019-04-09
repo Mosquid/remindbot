@@ -12,6 +12,5 @@ module.exports = function battery() {
       if (data.percentage < 50)
         emitonoff.emit('battery', stdout)
     })
-  }, 5000)
-  // }, 5 * 60 * 1000)
+  }, 5 * 60 * 1000)
 }

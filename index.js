@@ -26,7 +26,7 @@ bot.on('message', handleUpdateEvent)
 bot.on('polling_error', handlePollingError)
 
 emitonoff.on('battery', data => {
-  console.log(data, "DATA")
+  sendToChat(process.env.MY_CHAT, `Please charge me. The battery level is ${data.percentage}`)
 })
 
 emitonoff.on('task', task => {
