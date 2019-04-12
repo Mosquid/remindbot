@@ -19,10 +19,10 @@ module.exports.battery = function battery() {
     module.exports.getStatus()
     .then(data => {
       if (data.percentage < 20 && data.plugged !== 'PLUGGED_AC')
-        emitonoff.emit('battery', stdout)
+        emitonoff.emit('battery', JSON.stringify(data))
     })
     .catch(e => {
       console.log(e)
     })
-  }, 10 * 1000)
+  }, 60 * 60 * 1000)
 }
