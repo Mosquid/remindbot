@@ -15,6 +15,7 @@ const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
 // console.log(battery())
 require('dotenv').config()
+
 battery()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -122,6 +123,10 @@ ws.on('message', data => {
   const task = taskFactory({msg, date, chat})
   addTask(task)
   updateQueue()
+})
+
+ws.on('close', () => {
+  console.log('WS CLOSED')
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
