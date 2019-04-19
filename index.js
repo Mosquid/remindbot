@@ -17,7 +17,7 @@ const ws            = new WebSocket(process.env.WS_URL);
 // console.log(battery())
 require('dotenv').config()
 
-app.use('/', express.static('/Applications/MAMP/htdocs/reminder/dist/'))
+app.use('/', express.static(process.env.LOCAL_PATH))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
@@ -138,7 +138,7 @@ app.listen(port, () => {
   
   localtunnel(port, {
     port: port,
-    subdomain: 'mosquid'
+    subdomain: process.env.SUBDOMAIN
   }, function(err, tunnel) {
     console.log(tunnel)
   })
