@@ -10,13 +10,14 @@ const {emitonoff}   = require('./events')
 const cors          = require('cors')
 const {battery}     = require('./battery')
 const {getStatus}   = require('./battery')
+const localtunnel   = require('localtunnel');
 const port          = 1488
 const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
 // console.log(battery())
 require('dotenv').config()
 
-battery()
+app.use('/', express.static('/Applications/MAMP/htdocs/reminder/dist/'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
@@ -45,7 +46,7 @@ updateQueue()
  * API GET handler: returns upcoming tasks
  *
  */
-app.get('/', (req, res) => {
+app.get('/tasks', (req, res) => {
   const tasks = getAllTasks()
   
   if (!tasks || !tasks.length)
@@ -99,6 +100,7 @@ app.post('/', (req, res) => {
     return res.json({err: 'No message was sent'})
 
   const task = taskFactory({msg, date, chat})
+
   addTask(task)
   updateQueue()
 
@@ -129,7 +131,18 @@ ws.on('close', () => {
   console.log('WS CLOSED')
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`)
+
+  battery()
+  
+  localtunnel(port, {
+    port: port,
+    subdomain: 'mosquid'
+  }, function(err, tunnel) {
+    console.log(tunnel)
+  })
+})
 
 /**
  *
@@ -137,6 +150,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
  *
  */
 function handleUpdateEvent(upd) {
+  return ''
   const chatId = upd.chat.id
   const text = encodeURI(upd.text)
 
