@@ -18,7 +18,7 @@ const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
 // console.log(battery())
 
-app.use('/', express.static('/Applications/MAMP/htdocs/reminder/dist/'))
+app.use('/', express.static(process.env.STATIC_PATH))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
