@@ -1,4 +1,5 @@
-const TelegramBot   = require('node-telegram-bot-api');
+require('dotenv').config()
+
 const express       = require('express')
 const bodyParser    = require('body-parser')
 const moment        = require('moment-timezone')
@@ -11,22 +12,19 @@ const cors          = require('cors')
 const {battery}     = require('./battery')
 const {getStatus}   = require('./battery')
 const localtunnel   = require('localtunnel');
+const {getMyIp}     = require('./helpers')
+const {initBot}     = require('./bot')
 const port          = 1488
 const WebSocket     = require('ws');
 const ws            = new WebSocket(process.env.WS_URL);
 // console.log(battery())
-require('dotenv').config()
 
-app.use('/', express.static(process.env.LOCAL_PATH))
+app.use('/', express.static('/Applications/MAMP/htdocs/reminder/dist/'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
 
-const bot   = new TelegramBot(process.env.TOKEN, {polling: true})
-const users = {}
-
-bot.on('message', handleUpdateEvent)
-bot.on('polling_error', handlePollingError)
+let bot = initBot(handleUpdateEvent, handlePollingError)
 
 emitonoff.on('battery', data => {
   const obj = JSON.parse(data)
@@ -138,7 +136,7 @@ app.listen(port, () => {
   
   localtunnel(port, {
     port: port,
-    subdomain: process.env.SUBDOMAIN
+    subdomain: 'mosquid'
   }, function(err, tunnel) {
     console.log(tunnel)
   })
@@ -150,11 +148,15 @@ app.listen(port, () => {
  *
  */
 function handleUpdateEvent(upd) {
-  return ''
   const chatId = upd.chat.id
   const text = encodeURI(upd.text)
 
-  bot.sendMessage(chatId, `https://www.google.com/search?q=${text}`)
+  getMyIp().then(e => {
+    bot.sendMessage(chatId, `${e}:${port}?msg=${text}`)
+  }).catch(e => {
+    bot.sendMessage(chatId, `Oopps...`)
+  })
+
 }
 
 function taskFactory(data) {
@@ -176,4 +178,6 @@ function sendToChat(chat, text) {
 
 function handlePollingError(err) {
   console.log('[Polling Failed]', err);
+
+  bot = initBot(handleUpdateEvent, handlePollingError)
 }
