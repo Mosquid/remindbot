@@ -11,7 +11,6 @@ const {emitonoff}   = require('./events')
 const cors          = require('cors')
 const {battery}     = require('./battery')
 const {getStatus}   = require('./battery')
-const localtunnel   = require('localtunnel');
 const {getMyIp}     = require('./helpers')
 const {initBot}     = require('./bot')
 const port          = 1488
@@ -131,15 +130,7 @@ ws.on('close', () => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)
-
   battery()
-  
-  localtunnel(port, {
-    port: port,
-    subdomain: 'mosquid'
-  }, function(err, tunnel) {
-    console.log(tunnel)
-  })
 })
 
 /**
